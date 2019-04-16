@@ -8,6 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 
 import example.pia.weatherforecast.R
+import example.pia.weatherforecast.data.ApixuWeatherApiService
+import kotlinx.android.synthetic.main.current_weather_fragment.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import okhttp3.Dispatcher
 
 class CurrentWeatherFragment : Fragment() {
 
@@ -28,6 +34,12 @@ class CurrentWeatherFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(CurrentWeatherViewModel::class.java)
         // TODO: Use the ViewModel
+        val apiservice = ApixuWeatherApiService()
+
+        GlobalScope.launch(Dispatchers.Main) {
+            val currentWeatherResponse = apiservice.getCurrentWeather("orlando").await()
+            textview.text = currentWeatherResponse.toString()
+        }
     }
 
 }
