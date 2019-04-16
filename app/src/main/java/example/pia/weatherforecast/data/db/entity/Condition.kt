@@ -1,4 +1,4 @@
-package example.pia.weatherforecast.data.response
+package example.pia.weatherforecast.data.db.entity
 
 data class Condition(
     val text: String, // Clear

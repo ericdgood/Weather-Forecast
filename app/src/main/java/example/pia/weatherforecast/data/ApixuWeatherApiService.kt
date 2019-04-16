@@ -1,7 +1,7 @@
 package example.pia.weatherforecast.data
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import example.pia.weatherforecast.data.response.CurrentWeatherResponse
+import example.pia.weatherforecast.data.network.response.CurrentWeatherResponse
 import kotlinx.coroutines.Deferred
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -15,8 +15,6 @@ import retrofit2.http.Query
  * Created by Eric on 4/15/2019.
  */
 
-
-// http://api.apixu.com/v1/current.json?key=3ba8440e2fb447d197d10347191604&q=32825
 
 interface ApixuWeatherApiService {
 
