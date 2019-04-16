@@ -1,4 +1,4 @@
-package example.pia.weatherforecast.data
+package example.pia.weatherforecast.data.network
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import example.pia.weatherforecast.data.network.response.CurrentWeatherResponse
@@ -15,6 +15,9 @@ import retrofit2.http.Query
  * Created by Eric on 4/15/2019.
  */
 
+const val API_KEY = "3ba8440e2fb447d197d10347191604"
+
+// http://api.apixu.com/v1/current.json?key=3ba8440e2fb447d197d10347191604&q=32825
 
 interface ApixuWeatherApiService {
 
@@ -25,7 +28,9 @@ interface ApixuWeatherApiService {
     ): Deferred<CurrentWeatherResponse>
 
     companion object {
-        operator fun invoke(): ApixuWeatherApiService {
+        operator fun invoke(
+            connectivityInterceptor: ConnectivityInterceptor
+        ): ApixuWeatherApiService {
             val requestInterceptor = Interceptor {chain ->
 
                 val url = chain.request()
@@ -43,6 +48,7 @@ interface ApixuWeatherApiService {
 
             val okHttpClient = OkHttpClient.Builder()
                 .addInterceptor(requestInterceptor)
+                .addInterceptor(connectivityInterceptor)
                 .build()
 
             return Retrofit.Builder()

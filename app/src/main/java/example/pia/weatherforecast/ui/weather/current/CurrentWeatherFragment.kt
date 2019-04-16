@@ -6,14 +6,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 
 import example.pia.weatherforecast.R
-import example.pia.weatherforecast.data.ApixuWeatherApiService
+import example.pia.weatherforecast.data.network.ApixuWeatherApiService
+import example.pia.weatherforecast.data.network.ConnectivityInterceptorImpl
+import example.pia.weatherforecast.data.network.WeatherNetworkDataSourceImpl
 import kotlinx.android.synthetic.main.current_weather_fragment.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import okhttp3.Dispatcher
 
 class CurrentWeatherFragment : Fragment() {
 
@@ -32,13 +34,18 @@ class CurrentWeatherFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         viewModel = ViewModelProviders.of(this).get(CurrentWeatherViewModel::class.java)
         // TODO: Use the ViewModel
-        val apiservice = ApixuWeatherApiService()
+        val apiService = ApixuWeatherApiService(ConnectivityInterceptorImpl(this.context!!))
+        val weatherNetworkDataSource = WeatherNetworkDataSourceImpl(apiService)
+
+        weatherNetworkDataSource.downloadedCurrentWeather.observe(this, Observer {
+            textview.text = it.toString()
+        })
 
         GlobalScope.launch(Dispatchers.Main) {
-            val currentWeatherResponse = apiservice.getCurrentWeather("orlando").await()
-            textview.text = currentWeatherResponse.toString()
+            weatherNetworkDataSource.fetchCurrentWeather("Orlando", "en")
         }
     }
 
